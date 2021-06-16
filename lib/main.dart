@@ -66,10 +66,7 @@ class _TimerState extends State<Timer> {
             flex: 20,
             child: Column(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Text("Calendar Events: "),
-                ),
+                Text("Calendar Events: "),
                 Expanded(
                   flex: 9,
                   child: Container(
@@ -88,8 +85,9 @@ class _TimerState extends State<Timer> {
             ),
           ),
           Expanded(
-            flex: 100,
-            child: Center(
+            flex: 90,
+            child: Align(
+              alignment: Alignment.topCenter,
               child: CircularCountDownTimer(
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.height / 2,
@@ -189,7 +187,7 @@ class _TimerState extends State<Timer> {
             },
             icon: Icon(
                 _isBlocked ? Icons.check_box_outline_blank : Icons.check_box),
-            label: Text("Block Apps/notifications"),
+            label: Text("Block Apps"),
           ),
           SizedBox(
             height: 10,
