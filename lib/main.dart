@@ -84,6 +84,9 @@ class _TimerState extends State<Timer> {
               ],
             ),
           ),
+          SizedBox(
+            height: 20,
+          ),
           Expanded(
             flex: 90,
             child: Align(
@@ -120,78 +123,10 @@ class _TimerState extends State<Timer> {
               ),
             ),
           ),
-        ],
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton.extended(
-            onPressed: () {
-              setState(() {
-                if (_isPause) {
-                  _isPause = false;
-                  _controller.resume();
-                } else {
-                  _isPause = true;
-                  _controller.pause();
-                }
-              });
-            },
-            icon: Icon(_isPause ? Icons.play_arrow : Icons.pause),
-            label: Text(_isPause ? 'Resume' : 'Pause'),
-          ),
           SizedBox(
-            height: 10,
+            height: 20,
           ),
-          FloatingActionButton.extended(
-            onPressed: () {
-              setState(() {
-                if (_isBreak) {
-                  _timerMin = 25 * 60;
-                  _isBreak = false;
-                  _controller.restart(duration: _timerMin);
-                  if (_isPause) {
-                    _controller.restart(duration: _timerMin);
-                    _controller.pause();
-                  } else {
-                    _controller.restart(duration: _timerMin);
-                  }
-                } else {
-                  _timerMin = 5 * 60;
-                  _isBreak = true;
-                  if (_isPause) {
-                    _controller.restart(duration: _timerMin);
-                    _controller.pause();
-                  } else {
-                    _controller.restart(duration: _timerMin);
-                  }
-                }
-              });
-            },
-            icon: Icon(_isBreak ? Icons.wb_sunny : Icons.work),
-            label: Text('Skip'),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          //TODO: Make This app block all notifications
-          FloatingActionButton.extended(
-            onPressed: () {
-              setState(() {
-                if (_isBlocked) {
-                  _isBlocked = false;
-                } else {
-                  _isBlocked = true;
-                }
-              });
-            },
-            icon: Icon(
-                _isBlocked ? Icons.check_box_outline_blank : Icons.check_box),
-            label: Text("Block Apps"),
-          ),
-          SizedBox(
-            height: 10,
-          ),
+          buildRowButtons(),
         ],
       ),
     );
@@ -250,5 +185,192 @@ class _TimerState extends State<Timer> {
     }
 
     return texts;
+  }
+
+  Widget buildRowButtons() {
+    if (MediaQuery.of(context).size.width < 342) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(),
+              onPressed: () {
+                setState(() {
+                  if (_isBreak) {
+                    _timerMin = 25 * 60;
+                    _isBreak = false;
+                    _controller.restart(duration: _timerMin);
+                    if (_isPause) {
+                      _controller.restart(duration: _timerMin);
+                      _controller.pause();
+                    } else {
+                      _controller.restart(duration: _timerMin);
+                    }
+                  } else {
+                    _timerMin = 5 * 60;
+                    _isBreak = true;
+                    if (_isPause) {
+                      _controller.restart(duration: _timerMin);
+                      _controller.pause();
+                    } else {
+                      _controller.restart(duration: _timerMin);
+                    }
+                  }
+                });
+              },
+              icon: Icon(_isBreak ? Icons.wb_sunny : Icons.work),
+              label: Text('   Skip   '),
+              elevation: 0,
+            ),
+          ),
+          Container(
+            //TODO Make BUttons nice
+            color: Colors.red,
+            width: MediaQuery.of(context).size.width,
+            height: 60,
+            child: FloatingActionButton(
+              shape: RoundedRectangleBorder(),
+              onPressed: () {
+                setState(() {
+                  if (_isPause) {
+                    _isPause = false;
+                    _controller.resume();
+                  } else {
+                    _isPause = true;
+                    _controller.pause();
+                  }
+                });
+              },
+              child: Icon(
+                _isPause ? Icons.play_arrow : Icons.pause,
+                color: Colors.white,
+                size: 60,
+              ),
+              backgroundColor: Colors.transparent,
+
+              // label: Text(_isPause ? 'Resume' : 'Pause'),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(),
+              onPressed: () {
+                setState(() {
+                  if (_isBlocked) {
+                    _isBlocked = false;
+                  } else {
+                    _isBlocked = true;
+                  }
+                });
+              },
+              icon: Icon(
+                  _isBlocked ? Icons.check_box_outline_blank : Icons.check_box),
+              label: Text("Block Apps"),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width / 3,
+            height: 60,
+            child: FloatingActionButton.extended(
+              backgroundColor: Colors.yellow[900],
+              shape: RoundedRectangleBorder(),
+              onPressed: () {
+                setState(() {
+                  if (_isBreak) {
+                    _timerMin = 25 * 60;
+                    _isBreak = false;
+                    _controller.restart(duration: _timerMin);
+                    if (_isPause) {
+                      _controller.restart(duration: _timerMin);
+                      _controller.pause();
+                    } else {
+                      _controller.restart(duration: _timerMin);
+                    }
+                  } else {
+                    _timerMin = 5 * 60;
+                    _isBreak = true;
+                    if (_isPause) {
+                      _controller.restart(duration: _timerMin);
+                      _controller.pause();
+                    } else {
+                      _controller.restart(duration: _timerMin);
+                    }
+                  }
+                });
+              },
+              icon: Icon(
+                _isBreak ? Icons.wb_sunny : Icons.work,
+                color: Colors.white,
+              ),
+              label: Text(
+                '   Skip   ',
+                style: TextStyle(color: Colors.white),
+              ),
+              elevation: 0,
+            ),
+          ),
+          Container(
+            //TODO Make BUttons nice
+            color: Colors.red,
+            width: MediaQuery.of(context).size.width / 3,
+            height: 60,
+            child: FloatingActionButton(
+              shape: RoundedRectangleBorder(),
+              onPressed: () {
+                setState(() {
+                  if (_isPause) {
+                    _isPause = false;
+                    _controller.resume();
+                  } else {
+                    _isPause = true;
+                    _controller.pause();
+                  }
+                });
+              },
+              child: Icon(
+                _isPause ? Icons.play_arrow : Icons.pause,
+                color: Colors.white,
+                size: 60,
+              ),
+              backgroundColor: Colors.transparent,
+
+              // label: Text(_isPause ? 'Resume' : 'Pause'),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width / 3,
+            height: 60,
+            child: FloatingActionButton.extended(
+              backgroundColor: Colors.yellow[900],
+              shape: RoundedRectangleBorder(),
+              onPressed: () {
+                setState(() {
+                  if (_isBlocked) {
+                    _isBlocked = false;
+                  } else {
+                    _isBlocked = true;
+                  }
+                });
+              },
+              icon: Icon(
+                _isBlocked ? Icons.check_box_outline_blank : Icons.check_box,
+                color: Colors.white,
+              ),
+              elevation: 0,
+              label: Text("Block Apps", style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        ],
+      );
+    }
   }
 }
