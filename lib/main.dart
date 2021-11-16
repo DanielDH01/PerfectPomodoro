@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:perfectpomodoro/page/event_viewing_page.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
-import 'package:perfectpomodoro/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../agenda.dart' as agenda;
@@ -119,10 +118,13 @@ class _TimerState extends State<Timer> {
                     _controller.pause();
                   }
                 }),
+                splashFactory: NoSplash.splashFactory,
                 //TODO make the clickable area as width of screen
                 child: Container(
                   width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.all(50.0),
                   child: CircularCountDownTimer(
+                    //TODO add vibrations on alert
                     width: MediaQuery.of(context).size.width / 1.5,
                     height: MediaQuery.of(context).size.height / 1.5,
                     duration: _timerMin,
@@ -149,6 +151,20 @@ class _TimerState extends State<Timer> {
                               ),
                               type: AlertType.success)
                           .show();
+                      setState(() {
+                        if (_isPause == false) {
+                          _isPause = true;
+                        }
+                        if (_isBreak) {
+                          _timerMin = 25 * 60;
+                          _isBreak = false;
+                        } else {
+                          _timerMin = 5 * 60;
+                          _isBreak = true;
+                        }
+                        _controller.restart(duration: _timerMin);
+                        _controller.pause();
+                      });
                     },
                     textStyle: TextStyle(fontSize: 50.0, color: Colors.amber),
                   ),
@@ -235,6 +251,7 @@ class _TimerState extends State<Timer> {
                   if (_isBreak) {
                     _timerMin = 25 * 60;
                     _isBreak = false;
+                    _isPause = true;
                     _controller.restart(duration: _timerMin);
                     if (_isPause) {
                       _controller.restart(duration: _timerMin);
@@ -281,6 +298,10 @@ class _TimerState extends State<Timer> {
                   }
                 });
               },
+              highlightElevation: 0,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              elevation: 0,
               child: Icon(
                 _isPause ? Icons.play_arrow : Icons.pause,
                 color: Colors.white,
@@ -362,6 +383,7 @@ class _TimerState extends State<Timer> {
           Container(
             //TODO Make BUttons nice
             color: Colors.red,
+
             width: MediaQuery.of(context).size.width / 3,
             height: 60,
             child: FloatingActionButton(
@@ -378,6 +400,10 @@ class _TimerState extends State<Timer> {
                   }
                 });
               },
+              highlightElevation: 0,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              elevation: 0,
               child: Icon(
                 _isPause ? Icons.play_arrow : Icons.pause,
                 color: Colors.white,

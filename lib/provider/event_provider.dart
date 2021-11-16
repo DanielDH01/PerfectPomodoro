@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:perfectpomodoro/model/event.dart';
-import 'package:perfectpomodoro/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EventProvider extends ChangeNotifier {
