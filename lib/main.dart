@@ -2,13 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:perfectpomodoro/page/event_viewing_page.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
+import 'package:perfectpomodoro/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../agenda.dart' as agenda;
 import 'model/event.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(MyApp());
+SharedPreferences _prefs;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  _prefs = await SharedPreferences.getInstance();
+  if (_prefs.getBool("isDarkTheme") == null) {
+    await _prefs.setBool("isDarkTheme", false);
+  }
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => EventProvider(
+        isDarkMode: _prefs.getBool("isDarkTheme"),
+      ),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,15 +31,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => EventProvider(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Timer(),
-        themeMode: ThemeMode.dark,
-        darkTheme: ThemeData.dark().copyWith(
-            accentColor: Colors.yellowAccent, primaryColor: Colors.yellow[900]),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Timer(),
+      theme: Provider.of<EventProvider>(context).getTheme,
     );
   }
 }
@@ -45,12 +55,20 @@ class _TimerState extends State<Timer> {
 
   @override
   Widget build(BuildContext context) {
-    final events = Provider.of<EventProvider>(context).events;
+    final eventProvider = Provider.of<EventProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Pomodoro Perfected'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.brightness_6_outlined,
+          ),
+          onPressed: () => {
+            eventProvider.swapTheme(),
+          },
+        ),
         actions: <Widget>[
           IconButton(
             onPressed: () {
@@ -71,7 +89,7 @@ class _TimerState extends State<Timer> {
                   flex: 9,
                   child: Container(
                     child: ListView(
-                      children: makeList(events),
+                      children: makeList(eventProvider.events),
                     ),
                     padding: EdgeInsets.all(5.0),
                     decoration: BoxDecoration(
@@ -91,35 +109,50 @@ class _TimerState extends State<Timer> {
             flex: 90,
             child: Align(
               alignment: Alignment.topCenter,
-              child: CircularCountDownTimer(
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.height / 2,
-                duration: _timerMin,
-                fillColor: Colors.red,
-                ringColor: Colors.transparent,
-                controller: _controller,
-                backgroundColor: Colors.transparent,
-                strokeWidth: 5.0,
-                strokeCap: StrokeCap.round,
-                isTimerTextShown: true,
-                isReverse: true,
-                isReverseAnimation: true,
-                onComplete: () {
-                  Alert(
-                          context: context,
-                          title: 'Done',
-                          style: AlertStyle(
-                            isCloseButton: true,
-                            isButtonVisible: false,
-                            titleStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30.0,
-                            ),
-                          ),
-                          type: AlertType.success)
-                      .show();
-                },
-                textStyle: TextStyle(fontSize: 50.0, color: Colors.amber),
+              child: InkWell(
+                onTap: () => setState(() {
+                  if (_isPause) {
+                    _isPause = false;
+                    _controller.resume();
+                  } else {
+                    _isPause = true;
+                    _controller.pause();
+                  }
+                }),
+                //TODO make the clickable area as width of screen
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: CircularCountDownTimer(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    duration: _timerMin,
+                    fillColor: Colors.red,
+                    ringColor: Colors.transparent,
+                    controller: _controller,
+                    backgroundColor: Colors.transparent,
+                    strokeWidth: 5.0,
+                    strokeCap: StrokeCap.round,
+                    isTimerTextShown: true,
+                    isReverse: true,
+                    isReverseAnimation: true,
+                    onComplete: () {
+                      Alert(
+                              context: context,
+                              title: 'Done',
+                              style: AlertStyle(
+                                isCloseButton: true,
+                                isButtonVisible: false,
+                                titleStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30.0,
+                                ),
+                              ),
+                              type: AlertType.success)
+                          .show();
+                    },
+                    textStyle: TextStyle(fontSize: 50.0, color: Colors.amber),
+                  ),
+                ),
               ),
             ),
           ),
@@ -195,6 +228,7 @@ class _TimerState extends State<Timer> {
           Container(
             width: MediaQuery.of(context).size.width,
             child: FloatingActionButton.extended(
+              heroTag: 'btnRestart',
               shape: RoundedRectangleBorder(),
               onPressed: () {
                 setState(() {
@@ -221,7 +255,10 @@ class _TimerState extends State<Timer> {
                 });
               },
               icon: Icon(_isBreak ? Icons.wb_sunny : Icons.work),
-              label: Text('   Skip   '),
+              // label: Text('   Skip   '),
+              label: Center(
+                child: Text('skip'),
+              ),
               elevation: 0,
             ),
           ),
@@ -231,6 +268,7 @@ class _TimerState extends State<Timer> {
             width: MediaQuery.of(context).size.width,
             height: 60,
             child: FloatingActionButton(
+              heroTag: 'btnBlocked',
               shape: RoundedRectangleBorder(),
               onPressed: () {
                 setState(() {
@@ -249,13 +287,13 @@ class _TimerState extends State<Timer> {
                 size: 60,
               ),
               backgroundColor: Colors.transparent,
-
-              // label: Text(_isPause ? 'Resume' : 'Pause'),
+              tooltip: _isPause ? 'Resume' : 'Pause',
             ),
           ),
           Container(
             width: MediaQuery.of(context).size.width,
             child: FloatingActionButton.extended(
+              heroTag: 'btnBlocked',
               shape: RoundedRectangleBorder(),
               onPressed: () {
                 setState(() {
@@ -268,7 +306,9 @@ class _TimerState extends State<Timer> {
               },
               icon: Icon(
                   _isBlocked ? Icons.check_box_outline_blank : Icons.check_box),
-              label: Text("Block Apps"),
+              label: Center(
+                child: Text("Block Apps"),
+              ),
             ),
           ),
         ],
@@ -281,6 +321,7 @@ class _TimerState extends State<Timer> {
             width: MediaQuery.of(context).size.width / 3,
             height: 60,
             child: FloatingActionButton.extended(
+              heroTag: 'btnBreak',
               backgroundColor: Colors.yellow[900],
               shape: RoundedRectangleBorder(),
               onPressed: () {
@@ -324,6 +365,7 @@ class _TimerState extends State<Timer> {
             width: MediaQuery.of(context).size.width / 3,
             height: 60,
             child: FloatingActionButton(
+              heroTag: 'Btnpaused',
               shape: RoundedRectangleBorder(),
               onPressed: () {
                 setState(() {
@@ -350,6 +392,7 @@ class _TimerState extends State<Timer> {
             width: MediaQuery.of(context).size.width / 3,
             height: 60,
             child: FloatingActionButton.extended(
+              heroTag: 'Btn-Blocked',
               backgroundColor: Colors.yellow[900],
               shape: RoundedRectangleBorder(),
               onPressed: () {

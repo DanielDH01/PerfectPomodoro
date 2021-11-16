@@ -21,6 +21,7 @@ class AgendaPage extends MaterialPageRoute<Null> {
             ),
             body: CalendarWidget(),
             floatingActionButton: FloatingActionButton(
+              heroTag: null,
               child: Icon(Icons.add),
               backgroundColor: Colors.red[300],
               onPressed: () => Navigator.of(context).push(
