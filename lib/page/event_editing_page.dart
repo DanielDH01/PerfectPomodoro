@@ -20,16 +20,22 @@ class EventEditingPage extends StatefulWidget {
 class _EventEditingPageState extends State<EventEditingPage> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
+  EventProvider eventProvider;
   DateTime fromDate;
   DateTime toDate;
 
   @override
   void initState() {
     super.initState();
-
+    eventProvider = Provider.of<EventProvider>(context, listen: false);
     if (widget.event == null) {
-      fromDate = DateTime.now();
-      toDate = DateTime.now().add(Duration(hours: 2));
+      if (eventProvider.selectedDate != null) {
+        fromDate = eventProvider.selectedDate;
+        toDate = eventProvider.selectedDate.add(Duration(hours: 2));
+      } else {
+        fromDate = DateTime.now();
+        toDate = DateTime.now().add(Duration(hours: 2));
+      }
     } else {
       final event = widget.event;
 
@@ -46,28 +52,31 @@ class _EventEditingPageState extends State<EventEditingPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          leading: CloseButton(),
-          actions: buildEditingActions(),
-        ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(12),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                buildTitle(),
-                SizedBox(
-                  height: 12,
-                ),
-                buildDateTimePickers(),
-              ],
-            ),
+  Widget build(BuildContext context) {
+    eventProvider = Provider.of<EventProvider>(context);
+    return Scaffold(
+      appBar: AppBar(
+        leading: CloseButton(),
+        actions: buildEditingActions(),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(12),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              buildTitle(),
+              SizedBox(
+                height: 12,
+              ),
+              buildDateTimePickers(),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   List<Widget> buildEditingActions() => [
         ElevatedButton.icon(
@@ -241,12 +250,12 @@ class _EventEditingPageState extends State<EventEditingPage> {
 
       final isEditing = widget.event != null;
       final provider = Provider.of<EventProvider>(context, listen: false);
-      provider.addEvent(event);
       if (isEditing) {
         provider.editEvent(event, widget.event);
 
         Navigator.of(context).pop();
       } else {
+        provider.addEvent(event);
         Navigator.of(context).pop();
       }
     }

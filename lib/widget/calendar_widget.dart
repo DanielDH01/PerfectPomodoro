@@ -8,11 +8,11 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final events = Provider.of<EventProvider>(context).events;
+    final eventsProvider = Provider.of<EventProvider>(context);
 
     return SfCalendar(
       view: CalendarView.month,
-      dataSource: EventDataSource(events),
+      dataSource: EventDataSource(eventsProvider.events),
       initialSelectedDate: DateTime.now(),
       cellBorderColor: Colors.transparent,
       onLongPress: (details) {
@@ -23,6 +23,10 @@ class CalendarWidget extends StatelessWidget {
           context: context,
           builder: (context) => TasksWidget(),
         );
+      },
+      onTap: (details) => {
+        eventsProvider
+            .setDate(details.date.add(Duration(hours: DateTime.now().hour))),
       },
     );
   }

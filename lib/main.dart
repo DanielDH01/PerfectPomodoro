@@ -4,6 +4,7 @@ import 'package:perfectpomodoro/page/event_viewing_page.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:vibration/vibration.dart';
 import '../agenda.dart' as agenda;
 import 'model/event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +51,7 @@ class _TimerState extends State<Timer> {
   bool _isPause = false;
   bool _isBreak = false;
   bool _isBlocked = false;
-  int _timerMin = 25 * 60;
+  int _timerMin = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class _TimerState extends State<Timer> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pomodoro Perfected'),
+        title: Text('Perfect Pomodoro'),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(
@@ -119,7 +120,6 @@ class _TimerState extends State<Timer> {
                   }
                 }),
                 splashFactory: NoSplash.splashFactory,
-                //TODO make the clickable area as width of screen
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.all(50.0),
@@ -138,6 +138,7 @@ class _TimerState extends State<Timer> {
                     isReverse: true,
                     isReverseAnimation: true,
                     onComplete: () {
+                      Vibration.vibrate();
                       Alert(
                               context: context,
                               title: 'Done',

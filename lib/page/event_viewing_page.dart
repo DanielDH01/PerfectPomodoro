@@ -43,7 +43,7 @@ class EventViewingPage extends StatelessWidget {
       );
 
   Widget buildFromInfo() => buildHeader(
-        header: 'FROM',
+        header: '  FROM',
         child: Row(
           children: [
             Expanded(
@@ -62,7 +62,7 @@ class EventViewingPage extends StatelessWidget {
       );
 
   Widget buildToInfo() => buildHeader(
-        header: 'To',
+        header: '  TO',
         child: Row(
           children: [
             Expanded(
@@ -83,11 +83,13 @@ class EventViewingPage extends StatelessWidget {
   Widget titleInfo() => TextFormField(
         style: TextStyle(fontSize: 24),
         decoration: InputDecoration(
+          // contentPadding: EdgeInsets.(value),
           focusedBorder: InputBorder.none,
-          hintText: event.title,
-          hintStyle: TextStyle(color: Colors.white),
+          hintText: "   " + event.title,
+          hintStyle: TextStyle(),
+
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          labelText: 'Title: ',
+          labelText: ' Title: ',
           labelStyle: TextStyle(color: Colors.orangeAccent),
         ),
         readOnly: true,
