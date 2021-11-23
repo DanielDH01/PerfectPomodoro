@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:perfectpomodoro/database/events_database.dart';
+import 'package:perfectpomodoro/model/event.dart';
 import 'package:perfectpomodoro/model/event_data_source.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
 import 'package:perfectpomodoro/widget/tasks_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+// ignore: must_be_immutable
 class CalendarWidget extends StatelessWidget {
+  List<Event> events;
+
+  Future refreshEvents(EventProvider eventProvider) async {
+    this.events = eventProvider.events;
+  }
+
   @override
   Widget build(BuildContext context) {
     final eventsProvider = Provider.of<EventProvider>(context);
-
+    refreshEvents(eventsProvider);
     return SfCalendar(
       view: CalendarView.month,
-      dataSource: EventDataSource(eventsProvider.events),
+      dataSource: EventDataSource(events),
       initialSelectedDate: DateTime.now(),
       cellBorderColor: Colors.transparent,
       onLongPress: (details) {

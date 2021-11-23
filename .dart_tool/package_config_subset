@@ -126,6 +126,14 @@ source_span
 2.12
 file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/source_span-1.8.1/
 file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/source_span-1.8.1/lib/
+sqflite
+2.12
+file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/sqflite-2.0.0+4/
+file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/sqflite-2.0.0+4/lib/
+sqflite_common
+2.12
+file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/sqflite_common-2.0.1+1/
+file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/sqflite_common-2.0.1+1/lib/
 stack_trace
 2.12
 file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/stack_trace-1.10.0/
@@ -150,6 +158,10 @@ syncfusion_flutter_datepicker
 2.12
 file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-19.1.66-beta/
 file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-19.1.66-beta/lib/
+synchronized
+2.12
+file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/synchronized-3.0.0/
+file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/synchronized-3.0.0/lib/
 term_glyph
 2.12
 file:///C:/Users/danie/AppData/Local/Pub/Cache/hosted/pub.dartlang.org/term_glyph-1.2.0/

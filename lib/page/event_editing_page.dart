@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perfectpomodoro/database/events_database.dart';
 import 'package:perfectpomodoro/model/event.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,20 @@ class _EventEditingPageState extends State<EventEditingPage> {
   DateTime fromDate;
   DateTime toDate;
 
+  EventsDatabase eventsDatabase;
+  bool isLoading = false;
+
+  refreshEvents() {
+    setState(() {
+      isLoading = true;
+    });
+    this.eventsDatabase = EventsDatabase.instance;
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +58,8 @@ class _EventEditingPageState extends State<EventEditingPage> {
       fromDate = event.from;
       toDate = event.to;
     }
+
+    refreshEvents();
   }
 
   @override
@@ -240,24 +257,35 @@ class _EventEditingPageState extends State<EventEditingPage> {
     final isValid = _formKey.currentState.validate();
 
     if (isValid) {
-      final event = Event(
-        title: titleController.text,
-        from: fromDate,
-        to: toDate,
-        isAllDay: false,
-        description: 'Description',
-      );
-
       final isEditing = widget.event != null;
+
       final provider = Provider.of<EventProvider>(context, listen: false);
       if (isEditing) {
-        provider.editEvent(event, widget.event);
+        final event = Event(
+          id: widget.event.id,
+          title: titleController.text,
+          from: fromDate,
+          to: toDate,
+          isAllDay: false,
+          description: 'Description',
+        );
+        //TODO CHECK IF DATE UPDATES
+        eventsDatabase.edit(widget.event, event);
 
         Navigator.of(context).pop();
       } else {
-        provider.addEvent(event);
+        final event = Event(
+          title: titleController.text,
+          from: fromDate,
+          to: toDate,
+          isAllDay: false,
+          description: 'Description',
+        );
+        //CREATES EVENT IN DATABASE
+        eventsDatabase.create(event);
         Navigator.of(context).pop();
       }
+      provider.refreshEvents();
     }
   }
 }

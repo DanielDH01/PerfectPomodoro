@@ -1,4 +1,7 @@
+
 import 'package:flutter/material.dart';
+import 'package:perfectpomodoro/database/events_database.dart';
+import 'package:perfectpomodoro/model/event.dart';
 import 'package:perfectpomodoro/model/event_data_source.dart';
 import 'package:perfectpomodoro/page/event_viewing_page.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
@@ -11,12 +14,17 @@ class TasksWidget extends StatefulWidget {
 }
 
 class _TasksWidgetState extends State<TasksWidget> {
+  List<Event> eventList;
+
+  Future refreshEvents(EventProvider eventProvider) async {
+    this.eventList = eventProvider.events;
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<EventProvider>(context);
-    final selectedEvents = provider.eventsOfSelectedDate;
-
-    if (selectedEvents.isEmpty) {
+    refreshEvents(provider);
+    if (eventList.isEmpty) {
       return Center(
         child: Text(
           'No Events Found!',
