@@ -54,7 +54,7 @@ class _TimerState extends State<Timer> {
   bool _isBreak = false;
   bool _isBlocked = false;
   int _timerMin = 3;
-  List<Event> events;
+  // List<Event> events;
   bool isLoading = false;
 
   // @override
@@ -62,23 +62,23 @@ class _TimerState extends State<Timer> {
   //   super.initState();
   // }
 
-  Future refreshEvents(EventProvider eventProvider) async {
-    setState(() {
-      isLoading = true;
-    });
+  // Future refreshEvents(EventProvider eventProvider) async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
 
-    this.events = eventProvider.events;
+  //   this.events = eventProvider.events;
 
-    setState(() {
-      isLoading = false;
-    });
-  }
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     final eventProvider = Provider.of<EventProvider>(context);
     eventProvider.refreshEvents();
-    refreshEvents(eventProvider);
+    // refreshEvents(eventProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Perfect Pomodoro'),
@@ -111,7 +111,7 @@ class _TimerState extends State<Timer> {
                   flex: 9,
                   child: Container(
                     child: ListView(
-                      children: makeList(events),
+                      children: makeList(eventProvider.events),
                     ),
                     padding: EdgeInsets.all(5.0),
                     decoration: BoxDecoration(

@@ -285,7 +285,9 @@ class _EventEditingPageState extends State<EventEditingPage> {
         eventsDatabase.create(event);
         Navigator.of(context).pop();
       }
-      provider.refreshEvents();
+      setState(() {
+        provider.refreshEvents();
+      });
     }
   }
 }

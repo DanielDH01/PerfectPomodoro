@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class EventProvider extends ChangeNotifier {
   // final List<Event> _events = getEvents();
 
-
   List<Event> events;
 
   EventsDatabase database;
@@ -22,7 +21,6 @@ class EventProvider extends ChangeNotifier {
 
   void addEvent(Event event) {
     EventsDatabase.instance.create(event);
-
     notifyListeners();
   }
 
@@ -38,12 +36,10 @@ class EventProvider extends ChangeNotifier {
 
   void deleteEvent(Event event) {
     EventsDatabase.instance.delete(event.id);
-
     notifyListeners();
   }
 
   void editEvent(Event newEvent, Event oldEvent) {
-    final index = EventsDatabase.instance.readEvent(oldEvent.id);
     EventsDatabase.instance.edit(oldEvent, newEvent);
 
     notifyListeners();
