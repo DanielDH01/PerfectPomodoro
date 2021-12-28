@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:perfectpomodoro/database/events_database.dart';
 import 'package:perfectpomodoro/model/event.dart';
 import 'package:perfectpomodoro/model/event_data_source.dart';
 import 'package:perfectpomodoro/provider/event_provider.dart';
