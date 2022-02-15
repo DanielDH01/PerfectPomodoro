@@ -17,7 +17,6 @@ Future<void> main() async {
   if (_prefs.getBool("isDarkTheme") == null) {
     await _prefs.setBool("isDarkTheme", false);
   }
-  List<Event> eventsList = await EventsDatabase.instance.readAllEvents();
   runApp(
     ChangeNotifierProvider(
       create: (context) => EventProvider(
@@ -56,23 +55,6 @@ class _TimerState extends State<Timer> {
   int _timerMin = 3;
   // List<Event> events;
   bool isLoading = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
-  // Future refreshEvents(EventProvider eventProvider) async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-
-  //   this.events = eventProvider.events;
-
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +128,7 @@ class _TimerState extends State<Timer> {
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.all(50.0),
                   child: CircularCountDownTimer(
-                    //TODO add vibrations on alert
+                    //TODO add SOUNDS on alert
                     width: MediaQuery.of(context).size.width / 1.5,
                     height: MediaQuery.of(context).size.height / 1.5,
                     duration: _timerMin,
@@ -206,7 +188,6 @@ class _TimerState extends State<Timer> {
 
   List<Widget> makeList(List<Event> events) {
     List<Widget> texts = <Widget>[];
-    //TODO LIJST WERKT MAAR REFRESHT NIET AUTOMATISCH
     if (events != null) {
       if (events.isNotEmpty) {
         for (Event el in events) {
@@ -408,7 +389,6 @@ class _TimerState extends State<Timer> {
             ),
           ),
           Container(
-            //TODO Make BUttons nice
             color: Colors.red,
 
             width: MediaQuery.of(context).size.width / 3,

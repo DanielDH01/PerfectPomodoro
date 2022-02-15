@@ -8,16 +8,11 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 // ignore: must_be_immutable
 class CalendarWidget extends StatelessWidget {
-  List<Event> events;
-
-  Future refreshEvents(EventProvider eventProvider) async {
-    this.events = eventProvider.events;
-  }
-
   @override
   Widget build(BuildContext context) {
     final eventsProvider = Provider.of<EventProvider>(context);
-    refreshEvents(eventsProvider);
+    List<Event> events = eventsProvider.events;
+    
     return SfCalendar(
       view: CalendarView.month,
       dataSource: EventDataSource(events),
@@ -39,3 +34,37 @@ class CalendarWidget extends StatelessWidget {
     );
   }
 }
+
+// // ignore: must_be_immutable
+// class CalendarWidget extends StatelessWidget {
+//   List<Event> events;
+
+//   Future refreshEvents(EventProvider eventProvider) async {
+//     this.events = eventProvider.events;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final eventsProvider = Provider.of<EventProvider>(context);
+//     refreshEvents(eventsProvider);
+//     return SfCalendar(
+//       view: CalendarView.month,
+//       dataSource: EventDataSource(events),
+//       initialSelectedDate: DateTime.now(),
+//       cellBorderColor: Colors.transparent,
+//       onLongPress: (details) {
+//         final provider = Provider.of<EventProvider>(context, listen: false);
+
+//         provider.setDate(details.date);
+//         showModalBottomSheet(
+//           context: context,
+//           builder: (context) => TasksWidget(),
+//         );
+//       },
+//       onTap: (details) => {
+//         eventsProvider
+//             .setDate(details.date.add(Duration(hours: DateTime.now().hour))),
+//       },
+//     );
+//   }
+// }

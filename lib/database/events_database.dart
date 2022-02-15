@@ -75,7 +75,7 @@ class EventsDatabase {
 
     final result = await db.query(tableEvents);
 
-    return await result.map((json) => Event.fromJson(json)).toList();
+    return result.map((json) => Event.fromJson(json)).toList();
   }
 
   Future<Event> readEvent(int id) async {

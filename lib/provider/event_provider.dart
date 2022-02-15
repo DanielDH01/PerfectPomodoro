@@ -24,12 +24,14 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  refreshEvents() async {
+  
+
+  void refreshEvents() async {
     events = await EventsDatabase.instance.readAllEvents();
     notifyListeners();
   }
 
-  Future getEventsFromSelected(DateTime selectedDate) async {
+  void getEventsFromSelected(DateTime selectedDate) async {
     events = await EventsDatabase.instance.readAllEvents();
     notifyListeners();
   }
@@ -41,7 +43,6 @@ class EventProvider extends ChangeNotifier {
 
   void editEvent(Event newEvent, Event oldEvent) {
     EventsDatabase.instance.edit(oldEvent, newEvent);
-
     notifyListeners();
   }
 
