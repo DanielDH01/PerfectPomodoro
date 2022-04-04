@@ -31,7 +31,7 @@ class EventsDatabase {
 
     await db.execute('''
     CREATE TABLE $tableEvents(
-      ${EventFields.id} $idType,
+      `${EventFields.id}` $idType,
       `${EventFields.title}` $textType,
       `${EventFields.description}` $textType,
       `${EventFields.from}` $textType,
