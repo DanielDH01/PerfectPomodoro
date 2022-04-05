@@ -15,7 +15,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _prefs = await SharedPreferences.getInstance();
   if (_prefs.getBool("isDarkTheme") == null) {
-    await _prefs.setBool("isDarkTheme", false);
+    _prefs.setBool("isDarkTheme", false);
   }
   runApp(
     ChangeNotifierProvider(
@@ -53,14 +53,13 @@ class _TimerState extends State<Timer> {
   bool _isBreak = false;
   bool _isBlocked = false;
   int _timerMin = 3;
-  // List<Event> events;
   bool isLoading = false;
+  EventProvider eventProvider;
 
   @override
   Widget build(BuildContext context) {
-    final eventProvider = Provider.of<EventProvider>(context);
-    eventProvider.refreshEvents();
-    // refreshEvents(eventProvider);
+    eventProvider = Provider.of<EventProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Perfect Pomodoro'),
@@ -92,9 +91,7 @@ class _TimerState extends State<Timer> {
                 Expanded(
                   flex: 9,
                   child: Container(
-                    child: ListView(
-                      children: makeList(eventProvider.events),
-                    ),
+                    child: EventsList(),
                     padding: EdgeInsets.all(5.0),
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -184,64 +181,6 @@ class _TimerState extends State<Timer> {
         ],
       ),
     );
-  }
-
-  List<Widget> makeList(List<Event> events) {
-    List<Widget> texts = <Widget>[];
-    if (events != null) {
-      if (events.isNotEmpty) {
-        for (Event el in events) {
-          texts.add(
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => EventViewingPage(event: el),
-                ),
-              ),
-              child: IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 9,
-                      child: Text(
-                        el.title,
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                    VerticalDivider(
-                      color: Colors.white10,
-                    ),
-                    Expanded(
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.greenAccent[400],
-                        ),
-                        onPressed: () {
-                          final provider = Provider.of<EventProvider>(context,
-                              listen: false);
-
-                          EventsDatabase.instance.delete(el.id);
-                          provider.refreshEvents();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-          texts.add(Divider(
-            height: 5,
-            color: Colors.white10,
-          ));
-        }
-      }
-    } else {
-      texts.add(Text("Add something to Calender"));
-    }
-
-    return texts;
   }
 
   Widget buildRowButtons() {
@@ -390,7 +329,6 @@ class _TimerState extends State<Timer> {
           ),
           Container(
             color: Colors.red,
-
             width: MediaQuery.of(context).size.width / 3,
             height: 60,
             child: FloatingActionButton(
@@ -448,5 +386,76 @@ class _TimerState extends State<Timer> {
         ],
       );
     }
+  }
+}
+
+class EventsList extends StatefulWidget {
+  const EventsList({Key key}) : super(key: key);
+
+  @override
+  State<EventsList> createState() => _EventsListState();
+}
+
+class _EventsListState extends State<EventsList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: makeList(Provider.of<EventProvider>(context)),
+    );
+  }
+
+  List<Widget> makeList(EventProvider eventProvider) {
+    List<Widget> texts = <Widget>[];
+    List<Event> events = eventProvider.events;
+    if (events != null) {
+      if (events.isNotEmpty) {
+        for (Event el in events) {
+          texts.add(
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => EventViewingPage(event: el),
+                ),
+              ),
+              child: IntrinsicHeight(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 9,
+                      child: Text(
+                        el.title,
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    VerticalDivider(
+                      color: Colors.white10,
+                    ),
+                    Expanded(
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.greenAccent[400],
+                        ),
+                        onPressed: () {
+                          eventProvider.deleteEvent(el);
+                          // provider.refreshEvents();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          texts.add(Divider(
+            height: 5,
+            color: Colors.white10,
+          ));
+        }
+      }
+    } else {
+      texts.add(Text("Add something to Calender"));
+    }
+    return texts;
   }
 }

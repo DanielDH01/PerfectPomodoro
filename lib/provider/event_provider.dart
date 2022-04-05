@@ -21,10 +21,8 @@ class EventProvider extends ChangeNotifier {
 
   void addEvent(Event event) {
     EventsDatabase.instance.create(event);
-    notifyListeners();
+    refreshEvents();
   }
-
-  
 
   void refreshEvents() async {
     events = await EventsDatabase.instance.readAllEvents();
@@ -33,17 +31,20 @@ class EventProvider extends ChangeNotifier {
 
   void getEventsFromSelected(DateTime selectedDate) async {
     events = await EventsDatabase.instance.readAllEvents();
-    notifyListeners();
+
+    refreshEvents();
   }
 
   void deleteEvent(Event event) {
     EventsDatabase.instance.delete(event.id);
-    notifyListeners();
+
+    refreshEvents();
   }
 
   void editEvent(Event newEvent, Event oldEvent) {
     EventsDatabase.instance.edit(oldEvent, newEvent);
-    notifyListeners();
+
+    refreshEvents();
   }
 
   // THEME

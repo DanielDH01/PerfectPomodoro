@@ -259,7 +259,6 @@ class _EventEditingPageState extends State<EventEditingPage> {
     if (isValid) {
       final isEditing = widget.event != null;
 
-      final provider = Provider.of<EventProvider>(context, listen: false);
       if (isEditing) {
         final event = Event(
           id: widget.event.id,
@@ -282,12 +281,12 @@ class _EventEditingPageState extends State<EventEditingPage> {
           description: 'Description',
         );
         //CREATES EVENT IN DATABASE
-        eventsDatabase.create(event);
+        eventProvider.addEvent(event);
         Navigator.of(context).pop();
       }
-      setState(() {
-        provider.refreshEvents();
-      });
+      // setState(() {
+      //   provider.refreshEvents();
+      // });
     }
   }
 }
